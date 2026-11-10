@@ -6,7 +6,7 @@ public class Questions{
     private String[] options;
     private String correctAnswer;
 
-    public constructor(String prompt, String[] options, String correctAnswer) {
+    public Questions(String prompt, String[] options, String correctAnswer) {
         this.prompt = prompt;
         this.options = options;
         this.correctAnswer = correctAnswer;

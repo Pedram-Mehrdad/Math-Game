@@ -8,7 +8,7 @@ public class QuestionGenerator {
 
     private Random random = new Random();
 
-    public Question generate(String topic) {
+    public Questions generate(String topic) {
 
         if (topic.equals("GCD")) {
 
@@ -58,7 +58,7 @@ public class QuestionGenerator {
             );
         }
 
-        return
+        return null;
     }
 
     private int gcd(int a, int b) {

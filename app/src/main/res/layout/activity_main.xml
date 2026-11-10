@@ -1,19 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="#101827"
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- GAME TITLE -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MATH QUEST"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvTurn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TURN 1 - WARRIOR"
+            android:textColor="#FACC15"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="12dp"/>
+
+
+        <!-- ENEMY SECTION -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp"
+            android:background="#263449">
+
+            <TextView
+                android:id="@+id/tvEnemyArt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👹"
+                android:textSize="64sp"/>
+
+            <TextView
+                android:id="@+id/tvEnemyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="THE GUARDIAN"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/tvEnemyHealth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100 / 100 HP"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/enemyHealthBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:max="100"
+                android:progress="100"
+                android:progressTint="#EF4444"
+                android:progressBackgroundTint="#64748B"/>
+
+        </LinearLayout>
+
+
+        <!-- HEROES -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="YOUR HEROES"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/heroWarrior"
+                android:layout_width="0dp"
+                android:layout_height="85dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="⚔️ WARRIOR\nGCD"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="#475569"
+                android:layout_margin="3dp"/>
+
+            <TextView
+                android:id="@+id/heroMage"
+                android:layout_width="0dp"
+                android:layout_height="85dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="🔮 MAGE\nLCM"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="#31445A"
+                android:layout_margin="3dp"/>
+
+            <TextView
+                android:id="@+id/heroArcher"
+                android:layout_width="0dp"
+                android:layout_height="85dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="🏹 ARCHER\nPYTHAGORAS"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="#31445A"
+                android:layout_margin="3dp"/>
+
+        </LinearLayout>
+
+
+        <!-- QUESTION SECTION -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#263449"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/tvTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GCD CHALLENGE"
+                android:textColor="#FACC15"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Find the GCD of 24 and 36"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:padding="16dp"/>
+
+
+            <!-- ANSWER BUTTONS -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/option1"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:text="6"
+                    android:textAllCaps="false"
+                    android:backgroundTint="#2563EB"/>
+
+                <Button
+                    android:id="@+id/option2"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:text="12"
+                    android:textAllCaps="false"
+                    android:backgroundTint="#2563EB"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/option3"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:text="18"
+                    android:textAllCaps="false"
+                    android:backgroundTint="#2563EB"/>
+
+                <Button
+                    android:id="@+id/option4"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:text="24"
+                    android:textAllCaps="false"
+                    android:backgroundTint="#2563EB"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose the correct answer!"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:padding="12dp"/>
+
+        </LinearLayout>
+
+
+        <!-- SCORE AND RESTART -->
+
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SCORE: 0"
+            android:textColor="#FACC15"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnRestart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PLAY AGAIN"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
