@@ -80,7 +80,7 @@ public class QuestionGenerator {
 
         while (options.size() < 4) {
 
-            int wrongAnswer = answer + random.nextInt(15) - 7;
+            int wrongAnswer = answer + random.nextInt(15) - 7;          //generating wrong options
 
             if (wrongAnswer > 0 &&
                     wrongAnswer != answer &&
