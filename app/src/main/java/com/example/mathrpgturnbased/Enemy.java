@@ -17,9 +17,11 @@ public class Enemy {
         return HP;
     }
     public String getType() {
+
         return type;
     }
     public int getDamageRate() {
+
         return damageRate;
     }
 
