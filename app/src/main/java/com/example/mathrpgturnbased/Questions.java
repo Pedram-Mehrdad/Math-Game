@@ -1,16 +1,14 @@
 package com.example.mathrpgturnbased;
 import android.app.Activity;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.view.animation.DecelerateInterpolator;
 
-public class Questions{
+public class Questions {
 
     private String prompt;
     private String[] options;
@@ -39,17 +37,16 @@ public class Questions{
     }
 
 
-    public  void show(
+    public void show(
             Activity activity,
+            FrameLayout container,
             AnswerListener listener) {
 
-        Dialog dialog = new Dialog(activity);
-
-        // Load our XML layout
+        // Inflate the question layout.
         View view = LayoutInflater.from(activity)
-                .inflate(R.layout.dialog_question, null);
+                .inflate(R.layout.dialog_question, container, false);
 
-        // Connect XML elements
+        // Connect XML elements.
         TextView questionText =
                 view.findViewById(R.id.questionText);
 
@@ -60,12 +57,10 @@ public class Questions{
                 view.findViewById(R.id.answer4)
         };
 
-        // Display question
+        // Display question.
         questionText.setText(this.prompt);
 
-        // Get the four possible answers
-
-        // Configure the buttons
+        // Configure the buttons.
         for (int i = 0; i < 4; i++) {
 
             Button button = answerButtons[i];
@@ -81,37 +76,67 @@ public class Questions{
                         this.correctAnswer
                 );
 
-                // Destroy the popup
-                dialog.dismiss();
+                // Prevent multiple answers.
+                for (Button b : answerButtons) {
+                    b.setEnabled(false);
+                }
 
-                // Return true or false to Java
-                listener.onAnswer(isCorrect);
+                // Slide the question panel out.
+                view.animate()
+                        .translationX(
+                                container.getWidth() + view.getWidth()
+                        )
+                        .setDuration(350)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .withEndAction(() -> {
+
+                            container.removeView(view);
+                            container.setVisibility(View.GONE);
+
+                            listener.onAnswer(isCorrect);
+                        })
+                        .start();
             });
         }
 
-        // Show popup
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
+        // Add the panel at the bottom of the scene.
+        int screenWidth = activity.getResources()
+                .getDisplayMetrics().widthPixels;
 
-        dialog.show();
+        FrameLayout.LayoutParams params =
+                new FrameLayout.LayoutParams(
+                        (int) (screenWidth * 0.90f),
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        Gravity.TOP | Gravity.CENTER_HORIZONTAL
+                );
 
-        // Set dialog dimensions
-        Window window = dialog.getWindow();
+        params.topMargin = dp(activity, 16);
 
-        if (window != null) {
+        container.setVisibility(View.VISIBLE);
+        container.addView(view, params);
 
-            window.setBackgroundDrawable(
-                    new ColorDrawable(Color.TRANSPARENT)
+        // Start below the screen and slide into position.
+        view.post(() -> {
+
+            // Start completely outside the left side.
+            view.setTranslationX(
+                    -container.getWidth() - view.getWidth()
             );
 
-            int screenWidth = activity.getResources()
-                    .getDisplayMetrics().widthPixels;
+            view.setAlpha(1f);
 
-            window.setLayout(
-                    (int) (screenWidth * 0.90f),
-                    WindowManager.LayoutParams.WRAP_CONTENT
-            );
-        }
+            // Slide into position.
+            view.animate()
+                    .translationX(0f)
+                    .setDuration(400)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        });
     }
+
+    private int dp(Activity activity, float value) {
+        return (int) (value *
+                activity.getResources().getDisplayMetrics().density);
+    }
+
 }

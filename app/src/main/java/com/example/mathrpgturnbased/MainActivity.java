@@ -1,21 +1,36 @@
 package com.example.mathrpgturnbased;
 
+import android.widget.FrameLayout;
 import android.app.Activity;
 import android.os.Bundle;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private Logic logic;
+    private FrameLayout questionOverlay;
+
     private ImageView heroImage;
     private ImageView enemyImage;
+    private View heroFrame;
+    private View enemyFrame;
+    private ProgressBar heroHPBar;
+    private ProgressBar enemyHPBar;
 
-    private ObjectAnimator heroIdleAnimator;
-    private ObjectAnimator enemyIdleAnimator;
+    private ImageView leftCard;
+    private ImageView centerCard;
+    private ImageView rightCard;
+    private Enemy enemy;
+    private Hero hero;
+
+    private final Handler handler =
+            new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,77 +39,35 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         logic = new Logic();
 
-        showNextQuestion();
+        questionOverlay = findViewById(R.id.questionOverlay);
+
         heroImage = findViewById(R.id.Hero);
         enemyImage = findViewById(R.id.Enemy);
+
+        leftCard = findViewById(R.id.LeftCard);
+        centerCard = findViewById(R.id.SelectedCard);
+        rightCard = findViewById(R.id.RightCard);
+
+        heroFrame = findViewById(R.id.heroFrame);
+        enemyFrame = findViewById(R.id.enemyFrame);
+
+        heroHPBar = findViewById(R.id.heroHPBar);
+        enemyHPBar = findViewById(R.id.enemyHPBar);
+
+        enemy = logic.getEnemy();
+
+        enemyImage.setImageResource(enemy.getImageResID());
+        enemyHPBar.setMax(enemy.getFullHealth());
+        enemyHPBar.setProgress(enemy.getHP());
+
+        showNextQuestion();
     }
 
-
-    // Start idle animations when the game opens
-    @Override
-    protected void onStart() {
-        super.onStart();
-        startIdleAnimations();
-    }
-
-
-    // Stop animations when leaving the game
-    @Override
-    protected void onStop() {
-
-        if (heroIdleAnimator != null) {
-            heroIdleAnimator.cancel();
-        }
-
-        if (enemyIdleAnimator != null) {
-            enemyIdleAnimator.cancel();
-        }
-
-        super.onStop();
-    }
-
-
-    // Idle animations
-    private void startIdleAnimations() {
-
-        // Hero breathing
-        heroIdleAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                heroImage,
-                PropertyValuesHolder.ofFloat("scaleX", 1f, 1.015f, 1f),
-                PropertyValuesHolder.ofFloat("scaleY", 1f, 1.025f, 1f)
-        );
-
-        heroIdleAnimator.setDuration(1800);
-        heroIdleAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        heroIdleAnimator.setInterpolator(
-                new AccelerateDecelerateInterpolator()
-        );
-
-
-        // Enemy floating
-        enemyIdleAnimator = ObjectAnimator.ofFloat(
-                enemyImage,
-                "translationY",
-                0f, -dp(5), 0f
-        );
-
-        enemyIdleAnimator.setDuration(1600);
-        enemyIdleAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        enemyIdleAnimator.setInterpolator(
-                new AccelerateDecelerateInterpolator()
-        );
-
-
-        heroIdleAnimator.start();
-        enemyIdleAnimator.start();
-    }
-
-
-    // Hero attack
-    private void playAttackAnimation() {
+    // Attack animation
+    private void playHeroAttackAnimation() {
 
         ObjectAnimator attack = ObjectAnimator.ofFloat(
-                heroImage,
+                heroFrame,
                 "translationY",
                 0f, -dp(30), 0f
         );
@@ -104,12 +77,25 @@ public class MainActivity extends Activity {
         attack.start();
     }
 
+    private void playEnemyAttackAnimation() {
 
+        // Use horizontal movement so it doesn't conflict
+        // with the enemy's vertical idle animation.
+        ObjectAnimator attack = ObjectAnimator.ofFloat(
+                enemyFrame,
+                "translationX",
+                0f, dp(12), -dp(12), 0f
+        );
+
+        attack.setDuration(400);
+        attack.setInterpolator(new DecelerateInterpolator());
+        attack.start();
+    }
     // Enemy takes damage
-    private void playHitAnimation() {
+    private void playHitAnimation(View model) {
 
         ObjectAnimator hit = ObjectAnimator.ofFloat(
-                enemyImage,
+                model,
                 "rotation",
                 0f, -8f, 8f, -5f, 0f
         );
@@ -125,36 +111,125 @@ public class MainActivity extends Activity {
                 .getDisplayMetrics().density;
     }
 
+    private void updateHealthBars() {
+
+        if (hero != null) {
+            heroHPBar.setMax(hero.getFullHealth());
+            heroHPBar.setProgress(hero.getHP());
+        }
+
+        enemyHPBar.setMax(enemy.getFullHealth());
+        enemyHPBar.setProgress(enemy.getHP());
+    }
+
+    private void updateHeroCards() {
+
+        int count = logic.getHeroCount();
+        int currentIndex = logic.getCurrentHeroIndex();
+
+        if (count == 0 || currentIndex < 0) {
+            return;
+        }
+
+        // Previous hero, wrapping around the list.
+        Hero previousHero = logic.getHeroAt(
+                (currentIndex - 1 + count) % count
+        );
+
+        // Currently selected hero.
+        Hero currentHero = logic.getHeroAt(currentIndex);
+
+        // Next hero, wrapping around the list.
+        Hero nextHero = logic.getHeroAt(
+                (currentIndex + 1) % count
+        );
+
+        // Update card images.
+        leftCard.setImageResource(
+                previousHero.getCardResID()
+        );
+
+        centerCard.setImageResource(
+                currentHero.getCardResID()
+        );
+
+        rightCard.setImageResource(
+                nextHero.getCardResID()
+        );
+
+        // Small fade-in for the selected card.
+        centerCard.animate().cancel();
+        centerCard.setAlpha(0f);
+        centerCard.animate()
+                .alpha(1f)
+                .setDuration(200)
+                .start();
+    }
+
+    public void dealDamage(HeroOrEnemy dealer, HeroOrEnemy receiver) {
+
+        int damage = dealer.getDamageRate();
+
+        int remainingHP = Math.max(0, receiver.getHP() - damage);
+
+        receiver.setHP(remainingHP);
+    }
+
     private void showNextQuestion() {
+        if (logic.getIsBattleFinished()) {
+            return;
+        }
 
         Questions question = logic.nextQuestion();
 
         if (question == null) {
+            logic.endGame();
+            Toast.makeText(this, "GAME OVER", Toast.LENGTH_LONG).show();
             return;
         }
 
-        question.show(this, isCorrect -> {
+        hero = logic.getCurrentHero();
+        heroImage.setImageResource(hero.getImageResID());
+        updateHeroCards();
+        updateHealthBars();
 
-            if (isCorrect) {
-
-                // Correct answer
-                playAttackAnimation();
-                playHitAnimation();
-
-            } else {
-
-                // Incorrect answer
-                // No damage
+        question.show(this, questionOverlay, isCorrect -> {
+            if (logic.getIsBattleFinished()) {
+                return;
             }
 
-            // Show the next question after a short delay
-            new android.os.Handler(
-                    android.os.Looper.getMainLooper()
-            ).postDelayed(
-                    this::showNextQuestion,
-                    600
-            );
+            if (isCorrect) {
+                // Correct answer
+                playHeroAttackAnimation();
+                playHitAnimation(enemyFrame);
+                dealDamage(hero, enemy);
 
+            } else {
+                playEnemyAttackAnimation();
+                playHitAnimation(heroFrame);
+                dealDamage(enemy, hero);
+            }
+
+            updateHealthBars();
+
+            if (enemy.getHP() <= 0) {
+                logic.endGame();
+                Toast.makeText(this, "Victory!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Check defeat.
+            if (logic.areAllHeroesDefeated()) {
+
+                logic.endGame();
+
+                Toast.makeText(this, "GAME OVER!", Toast.LENGTH_LONG).show();
+
+                return;
+            }
+
+                // Display the next question after the animations begin.
+            handler.postDelayed(this::showNextQuestion, 600);
         });
     }
 }

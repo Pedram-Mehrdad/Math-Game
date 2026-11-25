@@ -3,9 +3,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
+    <!-- Background -->
 
     <ImageView
         android:id="@+id/Background"
@@ -13,42 +15,174 @@
         android:layout_height="0dp"
         android:contentDescription="Background"
         android:scaleType="centerCrop"
-        android:src="@drawable/mathquest_battle_background_411x891"
+        android:src="@drawable/background"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/mathquest_battle_background_411x891" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/Hero"
-        android:layout_width="321dp"
-        android:layout_height="490dp"
-        android:layout_marginBottom="52dp"
-        android:contentDescription=" Warrior"
-        android:scaleType="fitCenter"
-        android:src="@drawable/hero_warrior_back"
+    <!-- Hero frame -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/heroFrame"
+        android:layout_width="345dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="150dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.344"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <ImageView
-        android:id="@+id/Enemy"
-        android:layout_width="220dp"
-        android:layout_height="363dp"
-        android:layout_marginTop="200dp"
-        android:contentDescription=" Goblin"
+        <!-- Hero image -->
+        <ImageView
+            android:id="@+id/Hero"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="Hero"
+            android:scaleType="fitCenter"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Hero HP bar -->
+
+        <ProgressBar
+            android:id="@+id/heroHPBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="160dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="20dp"
+            android:padding="0dp"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/hp_bar"
+            app:layout_constraintTop_toTopOf="@id/Hero"
+            app:layout_constraintStart_toStartOf="@id/Hero"
+            app:layout_constraintEnd_toEndOf="@id/Hero"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Enemy frame -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/enemyFrame"
+        android:layout_width="170dp"
+        android:layout_height="260dp"
+        android:layout_marginTop="220dp"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.376"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/enemy_goblin_front" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <!-- Enemy image -->
+        <ImageView
+            android:id="@+id/Enemy"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="Goblin"
+            android:scaleType="fitCenter"
+            android:src="@drawable/enemy"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Enemy HP bar -->
+
+        <ProgressBar
+            android:id="@+id/enemyHPBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="160dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="21dp"
+            android:padding="0dp"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/hp_bar"
+            app:layout_constraintTop_toTopOf="@id/Enemy"
+            app:layout_constraintStart_toStartOf="@id/Enemy"
+            app:layout_constraintEnd_toEndOf="@id/Enemy"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Question panel overlay -->
+    <FrameLayout
+        android:id="@+id/questionOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- HERO cards -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/heroCards"
+        android:layout_width="0dp"
+        android:layout_height="170dp"
+        android:paddingHorizontal="12dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Left card -->
+        <ImageView
+            android:id="@+id/LeftCard"
+            android:layout_width="76dp"
+            android:layout_height="110dp"
+            android:scaleType="fitCenter"
+            android:alpha="0.8"
+            android:contentDescription="Previous hero card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/SelectedFrame"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Selected card frame -->
+        <ImageView
+            android:id="@+id/SelectedCard"
+            android:layout_width="112dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="Selected hero card"
+            app:layout_constraintTop_toTopOf="@id/SelectedFrame"
+            app:layout_constraintBottom_toBottomOf="@id/SelectedFrame"
+            app:layout_constraintStart_toStartOf="@id/SelectedFrame"
+            app:layout_constraintEnd_toEndOf="@id/SelectedFrame"/>
+
+        <ImageView
+            android:id="@+id/SelectedFrame"
+            android:layout_width="112dp"
+            android:layout_height="184dp"
+            android:src="@drawable/cardframe"
+            android:scaleType="fitXY"
+            android:importantForAccessibility="no"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Right card -->
+        <ImageView
+            android:id="@+id/RightCard"
+            android:layout_width="76dp"
+            android:layout_height="110dp"
+            android:scaleType="fitCenter"
+            android:alpha="0.8"
+            android:contentDescription="Next hero card"
+            app:layout_constraintStart_toEndOf="@id/SelectedFrame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

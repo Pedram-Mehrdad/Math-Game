@@ -20,7 +20,7 @@
             android:id="@+id/questionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Find the GCD of 24 and 36"
+            android:text="Find the X of A and B"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
